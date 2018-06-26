@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <style>
+  .pad { margin:10px; padding:10px; font-size: 48px;}
+  span.big { font-size: 36px; font-weight: 5;}
+
+</style>
+</head>
+<body width=100%>
+
+<div class="container-fluid" width=100%>
+  <h2>Three Unequal Columns</h2>
+  <p>To create unequal columns, you have to use numbers. The following example will create a 25%/50%/25% split:</p>
+  <div class="row">
+    <div class="col-2 bg-success pad">1号 <span class="big" id="name_1">大灰狼</span><br><img width="100%" id="img_1" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">2号 <span class="big" id="name_2">大灰狼</span><br><img width="100%" id="img_2" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">3号 <span class="big" id="name_3">大灰狼</span><br><img width="100%" id="img_3" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">4号 <span class="big" id="name_4">大灰狼</span><br><img width="100%" id="img_4" src="ww1.jpg"></div>
+  </div>
+  <div class="row">
+    <div class="col-2 bg-success pad">5号 <span class="big" id="name_5">大灰狼</span><br><img width="100%" id="img_5" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">6号 <span class="big" id="name_6">大灰狼</span><br><img width="100%" id="img_6" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">7号 <span class="big" id="name_7">大灰狼</span><br><img width="100%" id="img_7" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">8号 <span class="big" id="name_8">大灰狼</span><br><img width="100%" id="img_8" src="ww1.jpg"></div>
+  </div>
+  <div class="row">
+    <div class="col-2 bg-success pad">9号 <span class="big" id="name_9">大灰狼</span><br><img width="100%" id="img_9" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">10号 <span class="big" id="name_10">大灰狼</span><br><img width="100%" id="img_10" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">11号 <span class="big" id="name_11">大灰狼</span><br><img width="100%" id="img_11" src="ww1.jpg"></div>
+    <div class="col-2 bg-success pad">12号 <span class="big" id="name_12">大灰狼</span><br><img width="100%" id="img_12" src="ww1.jpg"></div>
+  </div>
+</div>
+<div id="status">Current Status</div>
+
+</body>
+<script langeuage="javascript">
+	var xmlhttp = new XMLHttpRequest();
+	var url = "status.txt";
+
+	xmlhttp.onreadystatechange = function() {
+	    if (this.readyState == 4 && this.status == 200) {
+	        //var myArr = JSON.parse(this.responseText);
+	        //myFunction(myArr);
+	        document.getElementById("status").innerHTML=this.responseText;
+	        console.log(this.responseText);
+	        update(this.responseText);
+	    }
+	};
+
+	function refresh() {
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
+		setTimeout(refresh, 500);
+	}
+
+	function update(arr) {
+		lines = arr.split("\n");
+	    for(i = 0; i < lines.length; i++) {
+	        a = lines[i].split(" ");
+	        name = a[0];
+	        value = a[1];
+	        if (name.startsWith("img_"))
+		    	document.getElementById(name).src = value;
+		    if (name.startsWith("name_"))
+		    	document.getElementById(name).innerHTML = value;
+	    }
+	}
+
+	refresh();	
+</script>
+
+</html>

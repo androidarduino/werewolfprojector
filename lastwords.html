@@ -1,0 +1,96 @@
+<audio id="ding" controls="false" hidden autoplay="false">
+  <source src="ding.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+<audio id="click" controls="false" hidden autoplay="false">
+  <source src="tita.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+<div class="row">
+<div class="col-12" align="center">
+<span id="num" class="bigger"> </span><span class="bigger">号玩家遗言，时间<span class="bigger" id="secs"></span>秒</span><hr>
+</div>
+<div class="col-7">
+<div class="item html">
+    <h2 style="font-size: 144px; font-weight: bolder; color: white"></h2>
+    <svg width="700" height="700" xmlns="http://www.w3.org/2000/svg">
+     <g>
+      <title>Layer 1</title>
+      <circle id="circle" class="circle_animation" r="280" cy="350" cx="350" stroke-width="64" stroke="#6fdb6f" fill="none"/>
+     </g>
+    </svg>
+</div>
+</div>
+<div class="col-5">
+  <img id="ava" src="#" align="center" width="80%" style="border-radius: 10%">
+</div>
+</div>
+<script>
+$("#num").text(target_number);
+$("#secs").text(time);
+$("#ava").attr("src", "ww"+target_number+".png");
+//window.setTimeout("$('#ddlg').dialog('close')", 1000)
+clearInterval(interval);
+var countdowncounter = time;
+
+setTimeout(function() { 
+
+  var initialOffset = '1760';
+  /* Need initial run as interval hasn't yet occured... */
+  $('.circle_animation').css('stroke-dashoffset', initialOffset-(1*(initialOffset/time)));
+
+  interval = setInterval(function() {
+      $('h2').text(countdowncounter);
+      if (countdowncounter > 90) {
+        $('circle').css({stroke:'#ffff00'});
+      }
+      if (countdowncounter <= 15) {
+        if (countdowncounter == 15)
+          document.getElementById('click').play();
+
+        $('circle').css({stroke:'#ffaaaa'});
+      }
+      if (countdowncounter <= 90 && countdowncounter > 15) {
+        $('circle').css({stroke:'#6fdb6f'});
+      }
+
+      if (countdowncounter == 0) {
+        document.getElementById('ding').play();
+        clearInterval(interval);
+        $('#ddlg').dialog('close');
+        return;
+      }
+      $('.circle_animation').css('stroke-dashoffset', initialOffset-((time - countdowncounter+1)*(initialOffset/time)));
+      countdowncounter--;  
+  }, 1000);
+
+}, 0)
+</script>
+<style type="text/css">
+.item {
+    position: relative;
+    float: left;
+}
+
+.item h2 {
+    text-align:center;
+    vertical-align: center;
+    position: absolute;
+    line-height: 590px;
+    width: 100%;
+    font-size: 72px%;
+}
+span.bigger {
+  font-size: 72px;
+}
+
+svg {
+   -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.circle_animation {
+  stroke-dasharray: 1760; /* this value is the pixel circumference of the circle */
+  stroke-dashoffset: 1760;
+  transition: all 1s linear;
+}</style>
