@@ -4,14 +4,16 @@ import re
 import time
 import os.path
 import random
+import players
 from pygame import mixer
 
 mixer.init()
 
 class Logic(object):
-    # this should be loaded from config file
-    m = { "img_1": "ww1.png", "img_2": "ww2.png", "img_3": "ww3.png", "img_4": "ww4.png", "img_5": "ww5.png", "img_6": "ww6.png", "img_7": "ww7.png", "img_8": "ww8.png", "img_9": "ww9.png", "img_10": "ww10.png", "img_11": "ww11.png", "img_12": "ww12.png", "name_1": "周忆沁", "name_2": "学弟", "name_3": "冬冬", "name_4": "齐康", "name_5": "李森南", "name_6": "Zhen Xia", "name_7": "雲上小竹", "name_11": "张翔", "name_9": "Haohao", "name_10": "想当狼", "name_8": "时间静止", "name_12": "陈可梁" }
-    masterVolumn = 0.5
+    m = players.m
+    masterVolumn = players.masterVolumn
+    angles = players.angles
+    angle = 0
 
     def processCmd(self, s):
         items = re.split(",|\s", s)
@@ -42,6 +44,7 @@ class Logic(object):
         openning = ["start"]
         # conveniencing sugar command, type a number, start speech
         if (verb.isdigit()):
+            self.angle = self.angles[int(verb)]
             return "dlg_speech: " + verb
         for n in nums:
             try:
@@ -60,14 +63,17 @@ class Logic(object):
             self.pic(verb, fq, "hunter.png", num)
             # display dialog with timer
             if (verb.lower() in fy):
+                self.angle = self.angles[num]
                 return "dlg_speech: " + str(num)
             if (verb.lower() in yy):
+                self.angle = self.angles[num]
                 return "dlg_lastwords: " + str(num)
             # live is a special case
             if (verb.lower() in fh):
                 self.live(num)
             # introduction needs some special work
             if (verb.lower() in jj):
+                self.angle = self.angles[num]
                 return "dlg_intro: " + str(num)
 
         # other control words without numbers
@@ -78,9 +84,13 @@ class Logic(object):
             return "dlg_vote"
         if (verb.lower() in home):
             return "home"
-        # crawn is a special case
+        # crown is a special case
         if (verb.lower() in dx):
+            self.angle = self.angles[num]
             self.crown("sherrif.png", num)
+            for i in range(1, 12):
+                self.live(i)
+
         if (verb.lower() in night):
             # play a random bgm
             bgm = os.listdir(os.curdir + "/bgm")
@@ -131,7 +141,7 @@ class Logic(object):
         print "sherrif is: ", jzhm
         if (jzhm > 0):
             s[jzhm - 1] = "r"
-        return "".join(s)
+        return "".join(s) + "," + str(self.angle) # TODO: define angle of each player, the step motor will turn to them accordingly
 
     def playSound(self, file, volumn=1):
         if (not os.path.isfile(file)):

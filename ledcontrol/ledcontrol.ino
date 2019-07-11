@@ -1,5 +1,18 @@
 #include <FastLED.h>
+#include <Stepper.h>
+#define STEPS 2038 // the number of steps in one revolution of your motor (28BYJ-48)
 
+Stepper stepper(STEPS, 8, 10, 9, 11);
+int currentDegree = 0; // real degree * 10
+
+void turnToDegree(int degree) {
+  float r = degree - currentDegree;
+  r = r / 3600 * STEPS;
+  currentDegree = degree;
+  //Serial.print("stepper motor turning for ");
+  //Serial.println(int(r));
+  stepper.step(int(r)); // do 2038 steps -- corresponds to one revolution in one minute
+}
 #define LED_PIN     7
 #define NUM_LEDS    14
 
@@ -10,6 +23,7 @@ String inData;
 void setup() {
   Serial.begin(9600);
   FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
+  stepper.setSpeed(12);// step motor runs at 12rpm
   Serial.println("Connected. Ready to Serve.");
 }
 
@@ -39,12 +53,16 @@ void loop() {
       inData += recieved; 
 
       // Process message when new line character is recieved
-      if (recieved == '\n')
+      if (recieved == ',')
       {
           //Serial.print("Arduino Received: ");
           //Serial.print(inData);
           Serial.println(updateLEDs());
           inData = ""; // Clear recieved buffer
+          int angle = Serial.parseInt();
+          //Serial.print("turning to angle: ");
+          //Serial.println(angle);
+          turnToDegree(angle);
       }
   }
   FastLED.show();
